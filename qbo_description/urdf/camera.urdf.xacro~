@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+  
+<!-- ==================  Color Macros  ================= -->
+
+  <xacro:macro name="black">
+    <material name="black">
+      <color rgba="0.1 0.1 0.1 1.0"/>
+    </material>
+  </xacro:macro>
+  
+<!-- ==================  Shape Macros  ================= -->
+
+  <xacro:macro name="camera_stereo" params="name">
+    <link name="${name}">
+    </link>
+  </xacro:macro>
+  
+  <xacro:macro name="webcam" params="name xyz rpy *color">
+    <link name="${name}">
+      <visual>
+        <origin xyz="${xyz}" rpy="${rpy}"/>
+        <geometry>
+          <cylinder length="0.001" radius="0.01"/>
+        </geometry>
+          <xacro:insert_block name="color"/>
+      </visual>
+    </link>
+  </xacro:macro>
+  
+<!-- ==================  Link Definitions  ================= -->
+
+  <xacro:camera_stereo name="camera" >
+  </xacro:camera_stereo>
+  
+  <xacro:webcam name="left_camera_frame" xyz="0 0 0" rpy="0 ${M_PI/2} 0" >
+    <xacro:black/>
+  </xacro:webcam>
+  
+  <xacro:webcam name="right_camera_frame" xyz="0 0 0" rpy="0 ${M_PI/2} 0" >
+    <xacro:black/>
+  </xacro:webcam>  
+  
+<!-- ==================  Joint Definitions  ================= -->  
+  
+  <joint name="camera_rgb_joint" type="fixed">
+    <origin xyz="0.09 0 0.02" rpy="${-M_PI/2} 0 ${-M_PI/2}"/>
+    <parent link="head_link"/>
+    <child link="camera"/>
+  </joint>
+  
+  <joint name="camera_left_joint" type="fixed">
+    <origin xyz="0.09 0.035 0.02" rpy="0 0 0"/>
+    <parent link="head_link"/>
+    <child link="left_camera_frame"/>
+  </joint>
+  
+  <joint name="camera_right_joint" type="fixed">
+    <origin xyz="0.09 -0.035 0.02" rpy="0 0 0"/>
+    <parent link="head_link"/>
+    <child link="right_camera_frame"/>
+  </joint>  
+  
+</robot>

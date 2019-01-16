@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<robot>
+
+  <property name="M_PI" value="3.1415926535897931" />
+  <property name="VELOCITY_LIMIT_SCALE" value="0.6" />
+  <property name="SCALE" value="0.005"/>
+  <property name="base_x" value="0.33" />
+  <property name="base_y" value="0.33" />
+  
+</robot>

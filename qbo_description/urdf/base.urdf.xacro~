@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+      
+ 
+<!-- ==================  Color Macros  ================= -->
+  
+  <xacro:macro name="body">
+    <material name="body">
+      <texture filename="package://qbo_description/meshes/qbo/format dae/green_qbo_body.tif"/>
+    </material>
+  </xacro:macro>
+  
+  <xacro:macro name="green">
+    <material name="green">
+      <color rgba="0.0 0.8 0.0 0.8"/>
+    </material>
+  </xacro:macro>
+  
+  <xacro:macro name="white">
+    <material name="white">
+      <color rgba="1.0 1.0 1.0 0.8"/>
+    </material>
+  </xacro:macro>
+ 
+  <xacro:macro name="black">
+    <material name="black">
+      <color rgba="0.1 0.1 0.1 1.0"/>
+    </material>
+  </xacro:macro>
+  
+  
+<!-- ==================  Base_footprint  ================= -->
+  
+  <link name="base_footprint"/>
+    
+  
+
+<!-- ==================  Shape Macros  ================= -->
+ 
+  <xacro:macro name="hardware" params="name xyz rpy meshe *color">
+    <link name="${name}">
+      <visual>
+        <origin xyz="${xyz}" rpy="${rpy}"/>
+        <geometry>
+          <mesh filename="${meshe}" scale="0.3909 0.3909 0.3909"/>
+        </geometry>
+          <xacro:insert_block name="color"/>
+      </visual>
+      <collision>
+        <origin xyz="${xyz}" rpy="${rpy}"/>
+        <geometry>
+          <mesh filename="${meshe}" scale="0.44 0.44 0.44"/>
+        </geometry>
+      </collision>
+    </link>
+   </xacro:macro>
+   
+   <xacro:macro name="bracket" params="name xyz rpy *color">
+    <link name="${name}">
+      <visual>
+        <origin xyz="${xyz}" rpy="${rpy}"/>
+        <geometry>
+          <box size="0.05 0.025 0.038"/>
+        </geometry>
+          <xacro:insert_block name="color"/>
+      </visual>
+      <collision>
+        <origin xyz="${xyz}" rpy="${rpy}"/>
+        <geometry>
+          <box size="0.05 0.025 0.038"/>
+        </geometry>
+      </collision>
+    </link>
+   </xacro:macro>
+   
+<!-- ==================  Link Definitions  ================= -->
+ 
+  <xacro:hardware name="base_link" xyz="0.16 0 0.163" rpy="0 0 ${M_PI/2}" meshe="package://qbo_description/meshes/qbo/body.stl">
+    <xacro:green/>
+  </xacro:hardware>
+ 
+  <xacro:hardware name="left_wheel_link" xyz="0 0 0" rpy="0 0 ${M_PI/2}" meshe="package://qbo_description/meshes/qbo/l_wheel.stl">
+    <xacro:black/>
+  </xacro:hardware>
+  
+  <xacro:hardware name="right_wheel_link" xyz="0 0 0" rpy="0 0 ${M_PI/2}" meshe="package://qbo_description/meshes/qbo/r_wheel.stl">
+    <xacro:black/>
+  </xacro:hardware>
+  
+  <xacro:hardware name="front_wheel_link" xyz="0 0.02 0" rpy="0 0 ${M_PI/2}" meshe="package://qbo_description/meshes/qbo/front_wheel.stl">
+    <xacro:black/>
+  </xacro:hardware>
+  
+  <xacro:hardware name="head_link" xyz="-0.01 -0.015 -0.1" rpy="0 0 ${M_PI/2}" meshe="package://qbo_description/meshes/qbo/head.stl">
+    <xacro:white/>
+  </xacro:hardware>
+  
+  <xacro:bracket name="base_pan_link" xyz="0 0 0" rpy="0 0 0"> 
+    <xacro:black/>
+  </xacro:bracket>
+  
+  <xacro:bracket name="head_tilt_link" xyz="0 0 0" rpy="0 0 0"> 
+    <xacro:black/>
+  </xacro:bracket>
+  
+  <xacro:bracket name="xtion_link" xyz="0 0 0" rpy="0 0 0"> 
+    <xacro:black/>
+  </xacro:bracket>
+ 
+<!-- ==================  Joint Definitions  ================= -->
+
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+  </joint>
+ 
+  <joint name="left_wheel_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="left_wheel_link"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0.115 0.095" rpy="0 0 0"/>
+  </joint>
+  
+  <joint name="right_wheel_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="right_wheel_link"/>
+    <axis xyz="1 0 0"/>
+    <origin xyz="0 -0.115 0.095" rpy="0 0 0"/>
+  </joint>
+  
+  <joint name="front_wheel_joint" type="fixed">
+    <origin xyz="0.14 0 0.045" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="front_wheel_link"/>
+  </joint>
+  
+  <joint name="head_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="head_tilt_link"/>
+    <child link="head_link"/>
+  </joint>
+  
+  <joint name="head_pan_joint" type="revolute">
+    <origin xyz="0.025 0 0.32" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="base_pan_link"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="3" />
+      <dynamics damping="0.0"/>
+  </joint>
+  
+  <joint name="head_tilt_joint" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="base_pan_link"/>
+    <child link="head_tilt_link"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="3" />
+      <dynamics damping="0.0"/>
+  </joint>
+  
+  <joint name="xtion_joint" type="fixed">
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    <parent link="head_link"/>
+    <child link="xtion_link"/>
+  </joint>
+ 
+</robot>

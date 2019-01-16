@@ -1,0 +1,6 @@
+<launch>
+    <master auto="start" />
+    <include file="$(find qbo_arduqbo)/launch/qbo_dynamixel_with_sensors.launch" /> 
+    <include file="$(find qbo_camera)/launch/qbo_stereo_node.launch" /> 
+    <include file="$(find neo_talk)/launch/neo_talk.launch" />
+</launch>
