@@ -1,0 +1,22 @@
+pub_rate: 1.0 # Optional
+base_path: 'JAR' # Optional, prepended to all diagnostic output
+sensors:
+  type: AnalyzerGroup
+  path: sensors
+  analyzers:
+    front_right:
+      type: GenericAnalyzer
+      path: diagnosticFrontRight 
+      timeout: 5.0
+    front_left:
+      type: GenericAnalyzer
+      path: diagnosticFrontLeft 
+      timeout: 5.0
+    back_right:
+      type: GenericAnalyzer
+      path: diagnosticBackRight 
+      timeout: 5.0
+    back_left:
+      type: GenericAnalyzer
+      path: diagnosticBackLeft 
+      timeout: 5.0
